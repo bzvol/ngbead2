@@ -1,0 +1,33 @@
+= Choose your own +++<s>adventure</s>+++ beadando
+
+== Feladatok
+
+=== Task 1
+
+==== A - Event handling
+
+==== B - Routing & Breadcrumb
+
+=== Task 2
+
+==== A - Form validation
+
+==== B - Component
+
+=== Task 3
+
+==== A - Pipe
+
+==== B - Directive
+
+=== Task 4
+
+==== A - ngx-charts
+
+==== B - ngx-image-cropper & modal
+
+=== Task 5
+
+==== A - Drag&Drop, YAML, RxJS
+
+==== B - Virtual scrolling
