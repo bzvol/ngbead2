@@ -1,33 +1,15 @@
-= Choose your own +++<s>adventure</s>+++ beadando
+= Choose your own complex beadando
 
 == Feladatok
 
 === Task 1
 
-==== A - Event handling
+==== A - Race
 
-==== B - Routing & Breadcrumb
+==== B - Animation
 
 === Task 2
 
-==== A - Form validation
+==== A - Guess Who
 
-==== B - Component
-
-=== Task 3
-
-==== A - Pipe
-
-==== B - Directive
-
-=== Task 4
-
-==== A - ngx-charts
-
-==== B - ngx-image-cropper & modal
-
-=== Task 5
-
-==== A - Drag&Drop, YAML, RxJS
-
-==== B - Virtual scrolling
+==== B - Worker
