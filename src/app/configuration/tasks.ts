@@ -382,8 +382,8 @@ egy tömbben.`,
           xp: 1
         },
         {
-          text: `Integrálj a projektedbe egy **Web Worker**t az órai példa alapján, és állítsd be a **kommunikáció**t
-          a fő szál (Angular komponens) és a worker között.
+          text: `Integráld a projektedbe __workers_ mappában található _konva.worker.ts_ **Web Worker**t az órai példa alapján,
+          és állítsd be a **kommunikáció**t a fő szál (Angular komponens) és a worker között.
 
 A worker és a fő szál tudjon üzeneteken keresztül kommunikálni, az ehhez szükséges feliratkozásokat készítsd el.`,
           xp: 1

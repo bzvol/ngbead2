@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 
 @Component({
     selector: 'app-task2-b',
@@ -6,7 +6,12 @@ import { Component } from '@angular/core';
     styleUrls: ['./task2-b.component.less'],
     standalone: false
 })
-export class Task2BComponent {
+export class Task2BComponent implements AfterViewInit {
+  worker?: Worker;
 
   constructor() { }
+
+  ngAfterViewInit() {
+
+  }
 }
