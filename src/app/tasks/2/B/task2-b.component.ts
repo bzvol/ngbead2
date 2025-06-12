@@ -1,6 +1,13 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {ResultMessage, WorkerMessage} from "../../../_models/workerMessage";
+import {
+  ProcessNumbersMessage,
+  ProcessNumbersResult,
+  ResultMessage,
+  WorkerMessage
+} from "../../../_models/workerMessage";
+
+const CHUNK_SIZE = 500;
 
 @Component({
   selector: 'app-task2-b',
@@ -11,6 +18,7 @@ import {ResultMessage, WorkerMessage} from "../../../_models/workerMessage";
 export class Task2BComponent implements OnInit, AfterViewInit {
   worker?: Worker;
   numbers: number[] = [];
+  results: ProcessNumbersResult[] = [];
 
   constructor(private http: HttpClient) {
   }
@@ -30,16 +38,16 @@ export class Task2BComponent implements OnInit, AfterViewInit {
       .map(line => parseFloat(line))
       .filter(num => !isNaN(num));
 
-    this.postNumbersToWorker();
+    this.postNumbersToWorker(this.numbers);
   }
 
-  postNumbersToWorker() {
+  postNumbersToWorker(numbers: number[]) {
     if (!this.worker) console.error('Worker is not initialized');
 
-    this.worker?.postMessage({
-      type: 'processNumbers',
-      numbers: this.numbers
-    });
+    for (let i = 0; i < numbers.length; i += CHUNK_SIZE) {
+      const chunk = numbers.slice(i, i + CHUNK_SIZE);
+      this.worker?.postMessage(new ProcessNumbersMessage(chunk));
+    }
   }
 
   setupWorker() {
@@ -48,7 +56,7 @@ export class Task2BComponent implements OnInit, AfterViewInit {
     this.worker.onmessage = ({data}: MessageEvent<WorkerMessage>) => {
       if (data.type === 'result') {
         const {result} = data as ResultMessage;
-        console.info('Result:', result);
+        this.results.push(result);
       }
     }
 

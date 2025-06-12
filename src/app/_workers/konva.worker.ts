@@ -4,31 +4,41 @@ import {ProcessNumbersMessage, ProcessNumbersResult, ResultMessage, WorkerMessag
 
 console.log('Starting worker...');
 
+let idCounter = 0;
+const receivedNumbers: number[] = [];
+
 self.onmessage = ({data}: MessageEvent<WorkerMessage>) => {
   if (data.type === 'processNumbers') {
     const {numbers} = data as ProcessNumbersMessage;
-    processNumbers(numbers);
+    receivedNumbers.push(...numbers);
+    processReceivedNumbers();
   }
 }
 
 self.onerror = console.error;
 
-function processNumbers(numbers: number[]) {
-  const min = Math.min(...numbers);
-  const max = Math.max(...numbers);
+function processReceivedNumbers() {
+  const min = Math.min(...receivedNumbers);
+  const max = Math.max(...receivedNumbers);
 
-  const sum = numbers.reduce((sum, num) => sum + num, 0);
-  const mean = sum / numbers.length;
+  const sum = receivedNumbers.reduce((sum, num) => sum + num, 0);
+  const mean = sum / receivedNumbers.length;
 
-  const sorted = numbers.sort((a, b) => a - b);
+  const sorted = receivedNumbers.sort((a, b) => a - b);
   const median = sorted.length % 2 === 0
     ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
     : sorted[sorted.length / 2];
 
-  const variance = numbers.reduce((sum, num) =>
-    sum + Math.pow(num - mean, 2), 0) / numbers.length;
+  const variance = receivedNumbers.reduce((sum, num) =>
+    sum + Math.pow(num - mean, 2), 0) / receivedNumbers.length;
   const stdDev = Math.sqrt(variance);
 
-  const result = new ProcessNumbersResult(min, max, mean, median, stdDev);
+  const result = new ProcessNumbersResult(
+    ++idCounter,
+    receivedNumbers.length,
+    min, max,
+    mean, median, stdDev
+  );
+
   self.postMessage(new ResultMessage(result));
 }

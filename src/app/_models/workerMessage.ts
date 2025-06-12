@@ -13,6 +13,8 @@ export class ProcessNumbersMessage extends WorkerMessage {
 
 export class ProcessNumbersResult {
   constructor(
+    public id: number,
+    public count: number,
     public min: number,
     public max: number,
     public mean: number,

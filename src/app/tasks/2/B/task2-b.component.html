@@ -1,1 +1,29 @@
-<p>task2-b works!</p>
+<h3>Eredmények</h3>
+
+<div class="table-wrapper">
+  <table id="results">
+    <thead>
+    <tr>
+      <th>Mennyiség</th>
+      <th>Minimum</th>
+      <th>Maximum</th>
+      <th>Átlag</th>
+      <th>Medián</th>
+      <th>Szórás</th>
+    </tr>
+    </thead>
+
+    <tbody>
+      @for (result of results; track result.id) {
+        <tr>
+          <td>{{ result.count }} db szám alapján</td>
+          <td>{{ result.min }}</td>
+          <td>{{ result.max }}</td>
+          <td>{{ result.mean }}</td>
+          <td>{{ result.median }}</td>
+          <td>{{ result.stdDev }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
