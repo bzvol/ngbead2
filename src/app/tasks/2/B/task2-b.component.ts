@@ -18,7 +18,8 @@ const CHUNK_SIZE = 500;
 export class Task2BComponent implements OnInit, AfterViewInit {
   worker?: Worker;
   numbers: number[] = [];
-  results: ProcessNumbersResult[] = [];
+  results: readonly ProcessNumbersResult[] = [];
+  chunkSize = CHUNK_SIZE;
 
   constructor(private http: HttpClient) {
   }
@@ -44,8 +45,8 @@ export class Task2BComponent implements OnInit, AfterViewInit {
   postNumbersToWorker(numbers: number[]) {
     if (!this.worker) console.error('Worker is not initialized');
 
-    for (let i = 0; i < numbers.length; i += CHUNK_SIZE) {
-      const chunk = numbers.slice(i, i + CHUNK_SIZE);
+    for (let i = 0; i < numbers.length; i += this.chunkSize) {
+      const chunk = numbers.slice(i, i + this.chunkSize);
       this.worker?.postMessage(new ProcessNumbersMessage(chunk));
     }
   }
@@ -56,10 +57,18 @@ export class Task2BComponent implements OnInit, AfterViewInit {
     this.worker.onmessage = ({data}: MessageEvent<WorkerMessage>) => {
       if (data.type === 'result') {
         const {result} = data as ResultMessage;
-        this.results.push(result);
+        this.results = this.results.concat(result);
       }
     }
 
     this.worker.onerror = console.error;
+  }
+
+  addRandomNumbers() {
+    const newNumbers = Array.from({length: 1000},
+      () => Math.floor(Math.random() * 100));
+
+    this.numbers.push(...newNumbers);
+    this.postNumbersToWorker(newNumbers);
   }
 }
