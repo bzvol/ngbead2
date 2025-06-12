@@ -15,7 +15,6 @@ export class ProcessNumbersResult {
   constructor(
     public min: number,
     public max: number,
-    public sum: number,
     public mean: number,
     public median: number,
     public stdDev: number
