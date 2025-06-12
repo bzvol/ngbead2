@@ -29,6 +29,7 @@ import {NzTableModule} from "ng-zorro-antd/table";
 import {en_US, NZ_I18N} from "ng-zorro-antd/i18n";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {FormsModule} from "@angular/forms";
+import {NzSkeletonModule} from "ng-zorro-antd/skeleton";
 
 
 const zorroModules = [
@@ -41,7 +42,8 @@ const zorroModules = [
   NzMenuModule,
   NzModalModule,
   NzTableModule,
-  NzInputModule
+  NzInputModule,
+  NzSkeletonModule
 ]
 
 @NgModule({

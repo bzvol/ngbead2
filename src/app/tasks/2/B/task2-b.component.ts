@@ -7,7 +7,7 @@ import {
   WorkerMessage
 } from "../../../_models/workerMessage";
 
-const CHUNK_SIZE = 500;
+const CHUNK_SIZE = 1000;
 
 @Component({
   selector: 'app-task2-b',
@@ -20,6 +20,10 @@ export class Task2BComponent implements OnInit, AfterViewInit {
   numbers: number[] = [];
   results: readonly ProcessNumbersResult[] = [];
   chunkSize = CHUNK_SIZE;
+
+  loading = false;
+  messageReceived = false;
+  timeoutInProgress = false;
 
   constructor(private http: HttpClient) {
   }
@@ -49,6 +53,16 @@ export class Task2BComponent implements OnInit, AfterViewInit {
       const chunk = numbers.slice(i, i + this.chunkSize);
       this.worker?.postMessage(new ProcessNumbersMessage(chunk));
     }
+
+    this.loading = true;
+    this.messageReceived = false;
+    this.timeoutInProgress = true;
+    setTimeout(() => {
+      this.timeoutInProgress = false;
+      if (this.messageReceived) {
+        this.loading = false;
+      }
+    }, 1000);
   }
 
   setupWorker() {
@@ -58,6 +72,11 @@ export class Task2BComponent implements OnInit, AfterViewInit {
       if (data.type === 'result') {
         const {result} = data as ResultMessage;
         this.results = this.results.concat(result);
+
+        this.messageReceived = true;
+        if (!this.timeoutInProgress) {
+          this.loading = false;
+        }
       }
     }
 
