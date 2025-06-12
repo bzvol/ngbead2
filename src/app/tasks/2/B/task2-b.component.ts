@@ -20,7 +20,7 @@ export class Task2BComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
+    this.setupWorker();
   }
 
   parseCsv(data: string) {
@@ -28,5 +28,15 @@ export class Task2BComponent implements OnInit, AfterViewInit {
       .split('\n')
       .map(line => parseFloat(line))
       .filter(num => !isNaN(num));
+  }
+
+  setupWorker() {
+    this.worker = new Worker(new URL('../../../_workers/konva.worker.ts', import.meta.url));
+
+    this.worker.onmessage = ({data}: MessageEvent) => {
+      console.info('Received message from worker:', data);
+    }
+
+    this.worker.onerror = console.error;
   }
 }
