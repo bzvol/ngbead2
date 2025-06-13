@@ -66,6 +66,20 @@ export class Car {
       });
     });
 
+    const headlightWidth = config.width / 6;
+    const headlights = Array.from({length: 2}, (_, i) => {
+      const x = config.x + (i === 0 ? 12 : config.width - 12 - headlightWidth);
+      return new Konva.Rect({
+        x: x,
+        y: config.y,
+        width: headlightWidth,
+        height: headlightWidth * 0.8,
+        fill: 'yellow',
+        stroke: 'black',
+        strokeWidth: 2
+      });
+    });
+
     const idText = new Konva.Text({
       x: config.x + config.width / 2 - 5,
       y: config.y + height - 26,
@@ -75,7 +89,7 @@ export class Car {
       fontFamily: 'Arial',
     });
 
-    group.add(...wheels, body, idText);
+    group.add(...wheels, body, ...headlights, idText);
 
     return group;
   }

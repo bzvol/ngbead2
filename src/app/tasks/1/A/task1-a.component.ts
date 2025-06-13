@@ -114,7 +114,9 @@ export class Task1AComponent implements AfterViewInit {
     const tooltipText = new Konva.Text({
       x: 10,
       y: 10,
-      text: `Health: Body - ${car.config.health.body}, Wheels - ${car.config.health.wheels}\nAcceleration: ${car.config.acceleration}\nMax Speed: ${car.config.maxSpeed}`,
+      text: `Health: Body - ${car.config.health.body}, Wheels - ${car.config.health.wheels}\n`
+        + `Acceleration: ${car.config.acceleration}\n`
+        + `Max Speed: ${car.config.maxSpeed}`,
       fontSize: 16,
       fill: 'black',
     });
