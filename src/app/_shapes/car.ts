@@ -21,17 +21,62 @@ export interface CarShapeConfig {
   strokeWidth?: number;
 }
 
+const PHYSICS_INTERVAL = 10;
+const SPEED_MULTIPLIER = 10;
+
 export class Car {
   shape: Konva.Group = this.createShape();
   private body?: Konva.Rect;
 
   private selected = false;
 
+  private accelerationPerInterval = (this.config.acceleration * PHYSICS_INTERVAL / 1000);
+  private speed = 0;
+  private accelerating = false;
+  private direction: 1 | -1 = 1;
+  private accInterval?: NodeJS.Timeout;
+
   constructor(public config: CarConfig) {
   }
 
   get id(): number {
     return this.config.id;
+  }
+
+  accelerate(accelerate: boolean, direction?: 1 | -1) {
+    this.accelerating = accelerate;
+    if (direction) {
+      this.direction = direction;
+    }
+
+    if (this.accInterval) {
+      clearInterval(this.accInterval);
+      this.accInterval = undefined;
+    }
+
+    if (!this.accelerating && this.speed <= 0) {
+      return;
+    }
+
+    this.accInterval = setInterval(() => {
+      this.speed += this.accelerationPerInterval
+        * (this.accelerating ? 1 : -2.2) // accelerating or decelerating, decelerating is stronger
+
+      if (this.speed < 0) {
+        this.speed = 0;
+
+        clearInterval(this.accInterval!);
+        this.accInterval = undefined;
+
+        return;
+      } else if (this.speed > this.config.maxSpeed) {
+        this.speed = this.config.maxSpeed;
+      }
+
+      const currentY = this.shape.y();
+      const newY = currentY + this.speed * -this.direction * (PHYSICS_INTERVAL / 1000) * SPEED_MULTIPLIER;
+      this.shape.y(newY);
+    }, PHYSICS_INTERVAL);
   }
 
   private createShape(): Konva.Group {
@@ -98,12 +143,17 @@ export class Car {
     if (this.selected) {
       this.body!.attrs.stroke = this.config.shape.stroke || 'black';
       this.body!.attrs.strokeWidth -= 2;
+      this.shape.getLayer()!.draw();
+
       this.selected = false;
+
       return;
     }
 
     this.body!.attrs.stroke = this.config.shape.selectedStroke || 'red';
     this.body!.attrs.strokeWidth += 2;
+    this.shape.getLayer()!.draw();
+
     this.selected = true;
   }
 }

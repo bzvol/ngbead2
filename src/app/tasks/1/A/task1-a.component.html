@@ -1,1 +1,11 @@
+<div class="game-toolbar">
+  <button nz-button
+          nzType="primary"
+          (click)="startGame()"
+          [disabled]="gameStarted">
+    Start Game
+  </button>
+  <h3 *ngIf="gameStarted">Game started!</h3>
+</div>
+
 <div #konvaContainer></div>

@@ -12,8 +12,8 @@ export class Task1AComponent implements AfterViewInit {
   @ViewChild('konvaContainer', {static: true})
   containerRef!: ElementRef<HTMLDivElement>;
 
-  private gameStarted = false;
-  private selectedCar?: Car;
+  protected gameStarted = false;
+  protected selectedCar?: Car;
 
   private stage?: Konva.Stage;
   private carLayer?: Konva.Layer;
@@ -36,6 +36,8 @@ export class Task1AComponent implements AfterViewInit {
     cars.forEach(this.setupCar.bind(this));
 
     this.stage.add(this.carLayer, this.tooltipLayer);
+
+    this.setupDrivingControls();
   }
 
   private setupCar(car: Car) {
@@ -133,15 +135,57 @@ export class Task1AComponent implements AfterViewInit {
     if (this.selectedCar) {
       if (this.selectedCar.id === car.id) {
         this.selectedCar = undefined;
-        car.select()
-        this.carLayer!.draw();
+        car.select();
       }
 
       return;
     }
 
     car.select();
-    this.carLayer!.draw();
     this.selectedCar = car;
+  }
+
+  protected startGame() {
+    if (this.gameStarted) return;
+
+    if (!this.selectedCar) {
+      alert('Please select a car first!');
+      return;
+    }
+
+    this.gameStarted = true;
+
+    this.selectedCar.shape.moveToTop();
+  }
+
+  private setupDrivingControls() {
+    document.addEventListener('keydown', (ev) => {
+      if (!this.gameStarted || !this.selectedCar) return;
+
+      switch (ev.key) {
+        case 'ArrowUp':
+        case 'w':
+          this.selectedCar.accelerate(true, 1);
+          break;
+        case 'ArrowDown':
+        case 's':
+          this.selectedCar.accelerate(true, -1);
+          break;
+      }
+    });
+
+    document.addEventListener('keyup', (ev) => {
+      if (!this.gameStarted || !this.selectedCar) return;
+      ev.preventDefault();
+
+      switch (ev.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'ArrowDown':
+        case 's':
+          this.selectedCar.accelerate(false);
+          break;
+      }
+    });
   }
 }
