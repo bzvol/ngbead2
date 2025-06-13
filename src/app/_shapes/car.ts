@@ -17,11 +17,15 @@ export interface CarShapeConfig {
   width: number;
   fill?: string;
   stroke?: string;
+  selectedStroke?: string;
   strokeWidth?: number;
 }
 
 export class Car {
   shape: Konva.Group = this.createShape();
+  private body?: Konva.Rect;
+
+  private selected = false;
 
   constructor(public config: CarConfig) {
   }
@@ -45,6 +49,7 @@ export class Car {
       strokeWidth: config.strokeWidth || 2,
       cornerRadius: 10,
     });
+    this.body = body;
 
     const wheelRadius = config.width / 6;
     const wheels = Array.from({length: 4}, (_, i) => {
@@ -73,5 +78,16 @@ export class Car {
     group.add(...wheels, body, idText);
 
     return group;
+  }
+
+  select() {
+    if (this.selected) {
+      this.body!.attrs.stroke = this.config.shape.stroke || 'black';
+      this.selected = false;
+      return;
+    }
+
+    this.body!.attrs.stroke = this.config.shape.selectedStroke || 'red';
+    this.selected = true;
   }
 }

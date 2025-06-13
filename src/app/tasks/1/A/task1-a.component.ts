@@ -12,10 +12,13 @@ export class Task1AComponent implements AfterViewInit {
   @ViewChild('konvaContainer', {static: true})
   containerRef!: ElementRef<HTMLDivElement>;
 
-  stage?: Konva.Stage;
-  carLayer?: Konva.Layer;
-  tooltipLayer?: Konva.Layer;
-  tooltip?: Konva.Group;
+  private gameStarted = false;
+  private selectedCar?: Car;
+
+  private stage?: Konva.Stage;
+  private carLayer?: Konva.Layer;
+  private tooltipLayer?: Konva.Layer;
+  private tooltip?: Konva.Group;
 
   constructor() {
   }
@@ -59,6 +62,8 @@ export class Task1AComponent implements AfterViewInit {
       }
     });
 
+    shape.on('click', () => this.selectCar(car));
+
     this.carLayer!.add(shape);
   }
 
@@ -74,6 +79,7 @@ export class Task1AComponent implements AfterViewInit {
   }
 
   private createRandomCar(id: number, shapeConfig: CarShapeConfig): Car {
+    const hue = Math.random() * 360;
     return new Car({
       id: id,
       health: {
@@ -82,7 +88,11 @@ export class Task1AComponent implements AfterViewInit {
       },
       acceleration: Math.floor(Math.random() * 9 + 2),
       maxSpeed: Math.floor(Math.random() * 30 + 20),
-      shape: {...shapeConfig, fill: shapeConfig.fill || `hsl(${Math.random() * 360}, 100%, 70%)`}
+      shape: {
+        ...shapeConfig,
+        fill: shapeConfig.fill || `hsl(${hue}, 100%, 70%)`,
+        selectedStroke: shapeConfig.selectedStroke || `hsl(${hue}, 100%, 90%)`,
+      }
     });
   }
 
@@ -113,5 +123,23 @@ export class Task1AComponent implements AfterViewInit {
     this.tooltip = tooltip;
 
     this.tooltipLayer!.add(tooltip);
+  }
+
+  private selectCar(car: Car) {
+    if (this.gameStarted) return;
+
+    if (this.selectedCar) {
+      if (this.selectedCar.id === car.id) {
+        this.selectedCar = undefined;
+        car.select()
+        this.carLayer!.draw();
+      }
+
+      return;
+    }
+
+    car.select();
+    this.carLayer!.draw();
+    this.selectedCar = car;
   }
 }
