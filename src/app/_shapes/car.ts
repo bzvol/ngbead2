@@ -1,6 +1,16 @@
 import Konva from "konva";
 
 export interface CarConfig {
+  health: {
+    body: number;
+    wheels: number;
+  },
+  acceleration: number,
+  maxSpeed: number;
+  shape: CarShapeConfig;
+}
+
+export interface CarShapeConfig {
   x: number;
   y: number;
   width: number;
@@ -10,10 +20,11 @@ export interface CarConfig {
 }
 
 export class Car {
-  private constructor() {
+  constructor(private config: CarConfig) {
   }
 
-  static create(config: CarConfig): Konva.Group {
+  createShape(): Konva.Group {
+    const config = this.config.shape;
     const group = new Konva.Group({});
 
     const height = config.width * 2;
