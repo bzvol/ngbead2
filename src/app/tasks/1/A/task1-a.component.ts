@@ -13,6 +13,9 @@ export class Task1AComponent implements AfterViewInit {
   containerRef!: ElementRef<HTMLDivElement>;
 
   stage?: Konva.Stage;
+  carLayer?: Konva.Layer;
+  tooltipLayer?: Konva.Layer;
+  tooltip?: Konva.Group;
 
   constructor() {
   }
@@ -20,12 +23,47 @@ export class Task1AComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.stage = new Konva.Stage({
       container: this.containerRef.nativeElement,
-      width: 600, height: 600
+      width: 800, height: 600
     });
 
-    const layer = new Konva.Layer();
+    this.carLayer = new Konva.Layer();
+    this.tooltipLayer = new Konva.Layer();
 
-    const cars = Array.from({length: 6}, (_, i) => {
+    const cars = this.generateCars(6);
+    cars.forEach(this.setupCar.bind(this));
+
+    this.stage.add(this.carLayer, this.tooltipLayer);
+  }
+
+  private setupCar(car: Car) {
+    const shape = car.shape;
+
+    shape.on('mouseover', () => {
+      const mousePos = this.tooltipLayer!.getRelativePointerPosition();
+      if (!mousePos) return;
+
+      if (this.tooltip) {
+        this.tooltip.x(mousePos.x);
+        this.tooltip.y(mousePos.y - 70);
+        return;
+      }
+
+      this.drawTooltip(mousePos, car);
+    });
+
+    shape.on('mouseout', () => {
+      if (this.tooltip) {
+        this.tooltip.destroy();
+        this.tooltip = undefined;
+        this.tooltipLayer!.draw();
+      }
+    });
+
+    this.carLayer!.add(shape);
+  }
+
+  private generateCars(n: number) {
+    return Array.from({length: n}, (_, i) => {
       return this.createRandomCar(i + 1, {
         x: 100 + (i % 3) * 120,
         y: 50 + Math.floor(i / 3) * 180,
@@ -33,12 +71,9 @@ export class Task1AComponent implements AfterViewInit {
         strokeWidth: 3
       });
     });
-
-    layer.add(...cars.map(car => car.createShape()));
-    this.stage.add(layer);
   }
 
-  createRandomCar(id: number, shapeConfig: CarShapeConfig): Car {
+  private createRandomCar(id: number, shapeConfig: CarShapeConfig): Car {
     return new Car({
       id: id,
       health: {
@@ -49,5 +84,34 @@ export class Task1AComponent implements AfterViewInit {
       maxSpeed: Math.floor(Math.random() * 30 + 20),
       shape: {...shapeConfig, fill: shapeConfig.fill || `hsl(${Math.random() * 360}, 100%, 70%)`}
     });
+  }
+
+  private drawTooltip(mousePos: { x: number; y: number }, car: Car) {
+    const tooltip = new Konva.Group({
+      x: mousePos.x,
+      y: mousePos.y - 70
+    });
+
+    const tooltipBg = new Konva.Rect({
+      width: 230,
+      height: 70,
+      fill: 'white',
+      cornerRadius: 10,
+      stroke: 'black',
+      strokeWidth: 2
+    });
+
+    const tooltipText = new Konva.Text({
+      x: 10,
+      y: 10,
+      text: `Health: Body - ${car.config.health.body}, Wheels - ${car.config.health.wheels}\nAcceleration: ${car.config.acceleration}\nMax Speed: ${car.config.maxSpeed}`,
+      fontSize: 16,
+      fill: 'black',
+    });
+
+    tooltip.add(tooltipBg, tooltipText);
+    this.tooltip = tooltip;
+
+    this.tooltipLayer!.add(tooltip);
   }
 }

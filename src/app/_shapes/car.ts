@@ -21,10 +21,16 @@ export interface CarShapeConfig {
 }
 
 export class Car {
-  constructor(private config: CarConfig) {
+  shape: Konva.Group = this.createShape();
+
+  constructor(public config: CarConfig) {
   }
 
-  createShape(): Konva.Group {
+  get id(): number {
+    return this.config.id;
+  }
+
+  private createShape(): Konva.Group {
     const config = this.config.shape;
     const group = new Konva.Group({});
 
