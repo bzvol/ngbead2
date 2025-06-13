@@ -91,7 +91,7 @@ export class Task1AComponent implements AfterViewInit {
       shape: {
         ...shapeConfig,
         fill: shapeConfig.fill || `hsl(${hue}, 100%, 70%)`,
-        selectedStroke: shapeConfig.selectedStroke || `hsl(${hue}, 100%, 90%)`,
+        selectedStroke: shapeConfig.selectedStroke || `hsl(${hue}, 100%, 30%)`,
       }
     });
   }

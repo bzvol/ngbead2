@@ -83,11 +83,13 @@ export class Car {
   select() {
     if (this.selected) {
       this.body!.attrs.stroke = this.config.shape.stroke || 'black';
+      this.body!.attrs.strokeWidth -= 2;
       this.selected = false;
       return;
     }
 
     this.body!.attrs.stroke = this.config.shape.selectedStroke || 'red';
+    this.body!.attrs.strokeWidth += 2;
     this.selected = true;
   }
 }
