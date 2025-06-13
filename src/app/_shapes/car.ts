@@ -1,6 +1,7 @@
 import Konva from "konva";
 
 export interface CarConfig {
+  id: number,
   health: {
     body: number;
     wheels: number;
@@ -54,7 +55,16 @@ export class Car {
       });
     });
 
-    group.add(...wheels, body);
+    const idText = new Konva.Text({
+      x: config.x + config.width / 2 - 5,
+      y: config.y + height - 26,
+      text: this.config.id.toString(),
+      fontSize: 20,
+      fill: 'black',
+      fontFamily: 'Arial',
+    });
+
+    group.add(...wheels, body, idText);
 
     return group;
   }

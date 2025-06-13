@@ -25,27 +25,29 @@ export class Task1AComponent implements AfterViewInit {
 
     const layer = new Konva.Layer();
 
-    let car = this.createRandomCar({
-      x: 50, y: 50,
-      width: 70,
-      strokeWidth: 3
+    const cars = Array.from({length: 6}, (_, i) => {
+      return this.createRandomCar(i + 1, {
+        x: 100 + (i % 3) * 120,
+        y: 50 + Math.floor(i / 3) * 180,
+        width: 70,
+        strokeWidth: 3
+      });
     });
 
-    layer.add(car.createShape());
+    layer.add(...cars.map(car => car.createShape()));
     this.stage.add(layer);
-
-    console.log(this.stage);
   }
 
-  createRandomCar(shapeConfig: CarShapeConfig): Car {
+  createRandomCar(id: number, shapeConfig: CarShapeConfig): Car {
     return new Car({
+      id: id,
       health: {
         body: Math.floor(Math.random() * 9 + 2),
         wheels: Math.floor(Math.random() * 5 + 1)
       },
       acceleration: Math.floor(Math.random() * 9 + 2),
       maxSpeed: Math.floor(Math.random() * 30 + 20),
-      shape: {...shapeConfig, fill: shapeConfig.fill || `hsl(${Math.random() * 360}, 100%, 50%)`}
+      shape: {...shapeConfig, fill: shapeConfig.fill || `hsl(${Math.random() * 360}, 100%, 70%)`}
     });
   }
 }
